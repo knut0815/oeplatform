@@ -1,9 +1,12 @@
 from django.db import models
-from django.db.models import CharField, DateTimeField
+from django.db.models import CharField, DateTimeField, ManyToManyField
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from colorfield.fields import ColorField
+from login.models import myuser as OepUser
+from django.contrib.auth.models import Group
 # Create your models here.
+
 
 class TableRevision(models.Model):
     table = CharField(max_length=1000, null=False)
@@ -22,16 +25,17 @@ class Tag(models.Model):
         return reverse('tag', kwargs={'pk': self.pk})
 
 
-
 class Tagable(models.Model):
     name = CharField(max_length=1000, null=False)
     tags = models.ManyToManyField(Tag)
     class Meta:
         abstract = True
 
+
 class Schema(Tagable):
     class Meta:
         unique_together = (("name"),)
+
 
 class Table(Tagable):
     schema = models.ForeignKey(Schema)
@@ -39,3 +43,5 @@ class Table(Tagable):
     class Meta:
         unique_together = (("schema", "name"),)
 
+class ModelGroup(Group):
+    tables = ManyToManyField(Table)
