@@ -6,6 +6,7 @@ import datetime
 from scipy import stats
 import numpy 
 from django.utils.safestring import mark_safe
+from django.utils.html import escape
 from django.utils.html import format_html
 from django.contrib.postgres.forms.array import SimpleArrayField
 
@@ -87,12 +88,21 @@ def get_verbose_field_name(instance, field_name):
     """
     return instance._meta.get_field(field_name).verbose_name
 
+def process_simple_field(field):
+    if type(field) == dict:
+        if 'fullurl' in field:
+            return format_html("<a href='{url}'>{label}</a>",url=escape(field['fullurl']),
+                                                    label=escape(field['fulltext']))
+    return field
+
 @register.simple_tag
 def get_field(instance, field_name):
     field = instance.__dict__[field_name]
-    if type(field)==list:
-        field = ", ".join(field)
-    return field
+    if type(field) == list:
+        field = ", ".join(map(process_simple_field, field))
+    else:
+        field = escape(field)
+    return mark_safe(field)
 
 @register.assignment_tag
 def assign_field(instance, field_name):

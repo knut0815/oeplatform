@@ -172,7 +172,9 @@
                     </td>
                     <td>
                         <table>
-{% checklist model "energy_sectors_electricity,energy_sectors_heat,energy_sectors_liquid_fuels,energy_sectors_gas,energy_sectors_others=energy_sectors_others_text" %}
+                            {% for r in model.energy_sectors %}
+                                {{ r }}
+                            {% endfor %}
 
                         </table>
                     </td>
@@ -183,7 +185,9 @@
                     </td>
                     <td>
                         <table>
-                            {% checklist model "demand_sectors_households,demand_sectors_industry,demand_sectors_commercial_sector,demand_sectors_transport" %}
+                            {% for r in model.demand_sectors %}
+                                {{ r }}
+                            {% endfor %}
 
 
                         </table>
@@ -249,27 +253,10 @@
                         Modeled technologies: components for generation or conversion
                     </td>
                     <td>
-                        <table class="profiletable">
-                            <tr>
-                                <td class="sheetlabel">
-                                    Renewables
-                                </td>
-                                <td>
-                                    <table>
-{% checklist model "generation_renewables_PV,generation_renewables_wind,generation_renewables_hydro,generation_renewables_biomass,generation_renewables_biogas,generation_renewables_solar_thermal,generation_renewables_others=generation_renewables_others_text" %}
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="sheetlabel">
-                                    Conventional
-                                </td>
-                                <td>
-                                    <table>
-{% checklist model "generation_conventional_gas,generation_conventional_coal,generation_conventional_oil,generation_conventional_liquid_fuels,generation_conventional_nuclear" %}
-                                    </table>
-                                </td>
-                            </tr>
+                        <table>
+                            {% for r in model.generation %}
+                                {{ r }}
+                            {% endfor %}
                         </table>
                     </td>
                 </tr>
@@ -344,7 +331,9 @@
                     </td>
                     <td>
                         <table>
-{% checklist model "geo_resolution_global,geo_resolution_continents,geo_resolution_national_states,geo_resolution_TSO_regions,geo_resolution_federal_states,geo_resolution_regions,geo_resolution_NUTS_3,geo_resolution_municipalities,geo_resolution_districts,geo_resolution_households,geo_resolution_power_stations,geo_resolution_others=geo_resolution_others_text" %}
+                            {% for r in model.georesolution %}
+                                {{ r }}
+                            {% endfor %}
                         </table>
                     </td>
                 </tr>
@@ -352,9 +341,9 @@
                     <td class="sheetlabel">
                         Time resolution
                     </td>
-                    <td>
-                        {% checklist model "time_resolution_anual,time_resolution_hour,time_resolution_15_min,time_resolution_1_min,time_resolution_other=time_resolution_other_text" %}
-                    </td>
+                            {% for r in model.timeresolution %}
+                                {{ r }}
+                            {% endfor %}
                 </tr>
                 {% include 'modelview/model_snippet.html' with model=model field='comment_on_geo_resolution'  %}
                 <tr>
@@ -396,20 +385,10 @@
                     <td class="sheetlabel">
                         Model class (optimisation)
                     </td>
-                    <td>
-                        {% checklist model "model_class_optimization_LP,model_class_optimization_MILP,model_class_optimization_Nonlinear=model_class_optimization_LP_MILP_Nonlinear_text" %}
-                    </td>
+                    {% for r in model.timeresolution %}
+                                {{ r }}
+                    {% endfor %}
                 </tr>
-                <tr>
-                    <td class="sheetlabel">
-                        Model class (simulation)
-                    </td>
-                    <td>
-                        {% checklist model "model_class_simulation_Agentbased,model_class_simulation_System_Dynamics,model_class_simulation_Accounting_Framework,model_class_simulation_Game_Theoretic_Model" %}
-
-                    </td>
-                </tr>
-                {% include 'modelview/model_snippet.html' with model=model field='model_class_other' add=model.model_class_other_text  %}
                 {% include 'modelview/model_snippet.html' with model=model field='short_description_of_mathematical_model_class'  %}
                 <tr>
                     <td class="sheetlabel">

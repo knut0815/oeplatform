@@ -2,8 +2,8 @@
 {% load bootstrap3 %}
 {% block content %}
 <div class="list-group">
-{% for id, name in models %}
-    <a class="list-group-item" href="{{id}}">{{ name }}</a>
+{% for name in models %}
+    <a class="list-group-item" href="{{name}}">{{ name }}</a>
 {% endfor %}
 </div>
 <br><a class="btn btn-info" href="add">New</a>
