@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="{% static 'css/mv-style.css' %}">
 <div class="container">
     <div style="float: left;">
-        <h1> {{ model.model_name }} {% if  model.acronym %} ({{ model.acronym }}) {% endif %} </h1>
+        <h1> {{ model.model_name.value }} {% if  model.acronym.value %} ({{ model.acronym.value }}) {% endif %} </h1>
     </div>
     <div>
         <a class="btn btn-info" style="float:right; position: absolute;bottom: 5;right: 0;" href="edit"><span name="icon"></span>Edit</a>
@@ -156,7 +156,7 @@
                     </td>
                     <td>
                         <table>
-                            {% checklist model "model_types_grid,model_types_demand_simulation,model_types_feed_in_simulation,model_types_other=model_types_other_text" %}
+                            {% checklist model "model_types" %}
                         </table>
                     </td>
                 </tr>

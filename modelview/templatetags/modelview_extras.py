@@ -93,11 +93,16 @@ def process_simple_field(field):
         if 'fullurl' in field:
             return format_html("<a href='{url}'>{label}</a>",url=escape(field['fullurl']),
                                                     label=escape(field['fulltext']))
+        if field['type'] == '_uri':
+            return format_html("<a href='{url}'>{label}</a>",
+                               url=escape(field['value']),
+                               label=escape(field['value']))
+
     return field
 
 @register.simple_tag
 def get_field(instance, field_name):
-    field = instance.__dict__[field_name]
+    field = instance.__dict__[field_name]['value']
     if type(field) == list:
         field = ", ".join(map(process_simple_field, field))
     else:
@@ -108,10 +113,13 @@ def get_field(instance, field_name):
 def assign_field(instance, field_name):
     return instance.__dict__[field_name]
 
+@register.assignment_tag
+def is_true(value):
+    return value == ['t']
 
 @register.simple_tag
 def get_field_attr(instance, field_name, attr, cut=None):
-    val = instance._meta.get_field(field_name).__dict__[attr]
+    val = getattr(instance, attr, None)
     if cut:
         val = val.replace(cut,"")
     return val
@@ -122,7 +130,7 @@ def set_val(val):
     
 @register.assignment_tag
 def assign_field_attr(instance, field_name, attr):
-    return instance._meta.get_field(field_name).__dict__[attr]
+    return getattr(instance, attr, None)
 
 @register.filter('fieldtype')
 def fieldtype(field):

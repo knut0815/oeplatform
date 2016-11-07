@@ -64,6 +64,66 @@ def listsheets(request,sheettype):
 def ask(query):
     return requests.get('http://wiki.openmod-initiative.org/api.php?format=json&action=ask&query=%s'%query).json()
 
+
+FW_Map = {
+    "model_name" : "Full Model Name",
+    "acronym" : "",
+    "institutions" : "Author institution",
+    "authors" : "Authors",
+    "current_contact_person" : "Contact Persons",
+    "contact_email" : "Contact Email",
+    "website" : "Website",
+    "logo" : "Logo",
+    "primary_purpose" : "Primary purpose",
+    "primary_outputs" : "Primary outpurs",
+    "support" : "Support",
+
+    "framework" : "",
+    "framework_yes_text" : "",
+
+    "user_documentation" : "User documentation",
+    "code_documentation" : "Code documentation",
+    "documentation_quality" : "",
+    "source_of_funding" : "Source of funcing",
+    "open_source" : "Open source licensed",
+    "open_up" : "Open future",
+    "costs" : "",
+    "license" : "License",
+    "license_other_text" : "",
+    "source_code_available" : "Model source public",
+    "gitHub" : "",
+    "link_to_source_code" : "Link to source",
+    "data_provided" : "Data availability",
+    "cooperative_programming" : "",
+    "number_of_devolopers" : "Number of developers",
+    "number_of_users" : "Number of users",
+    "modelling_software" : "Modelling software",
+    "interal_data_processing_software" : "Processing software",
+
+    "external_optimizer" : "External optimizer",
+    "external_optimizer_yes_text" : "",
+
+    "additional_software" : "Additional software required",
+    "gui" : "GUI",
+
+    "citation_reference" : "Citation references",
+    "citation_DOI" : "Citation doi",
+    "references_to_reports_produced_using_the_model" : "Report references",
+    "larger_scale_usage" : "",
+
+    # Framework
+    "model_types_grid" : "",
+    "model_types_demand_simulation": "",
+    "model_types_feed_in_simulation": "",
+    "model_types_other": "",
+    "model_types_other_text": "",
+
+    "api_doc": "",
+    "data_api": "",
+    "abstraction": "",
+    "used": ""
+    }
+
 EM_Map = {
     "model_name" : "Full Model Name",
     "acronym" : "",
@@ -73,17 +133,17 @@ EM_Map = {
     "contact_email" : "Contact Email",
     "website" : "Website",
     "logo" : "Logo",
-    "primary_purpose" : "",
-    "primary_outputs" : "",
-    "support" : "",
+    "primary_purpose" : "Primary purpose",
+    "primary_outputs" : "Primary outpurs",
+    "support" : "Support",
 
     "framework" : "",
     "framework_yes_text" : "",
 
-    "user_documentation" : "",
-    "code_documentation" : "",
+    "user_documentation" : "User documentation",
+    "code_documentation" : "Code documentation",
     "documentation_quality" : "",
-    "source_of_funding" : "",
+    "source_of_funding" : "Source of funcing",
     "open_source" : "Open source licensed",
     "open_up" : "Open future",
     "costs" : "",
@@ -91,19 +151,19 @@ EM_Map = {
     "license_other_text" : "",
     "source_code_available" : "Model source public",
     "gitHub" : "",
-    "link_to_source_code" : "",
+    "link_to_source_code" : "Link to source",
     "data_provided" : "Data availability",
     "cooperative_programming" : "",
-    "number_of_devolopers" : "",
-    "number_of_users" : "",
+    "number_of_devolopers" : "Number of developers",
+    "number_of_users" : "Number of users",
     "modelling_software" : "Modelling software",
     "interal_data_processing_software" : "Processing software",
 
-    "external_optimizer" : "",
+    "external_optimizer" : "External optimizer",
     "external_optimizer_yes_text" : "",
 
-    "additional_software" : "",
-    "gui" : "",
+    "additional_software" : "Additional software required",
+    "gui" : "GUI",
 
     "citation_reference" : "Citation references",
     "citation_DOI" : "Citation doi",
@@ -113,210 +173,319 @@ EM_Map = {
     # Energymodel
 
     "energy_sectors": "Sectors",
-    """
-    "energy_sectors_electricity" : "sectors",
-    "energy_sectors_heat" : "sectors",
-    "energy_sectors_liquid_fuels" : "sectors",
-    "energy_sectors_gas" : "sectors",
-    "energy_sectors_others" : "sectors",
-    "energy_sectors_others_text" : "sectors",
-    """
 
     "demand_sectors" : "",
-    """
-    "demand_sectors_households" : "",
-    "demand_sectors_industry" : "",
-    "demand_sectors_commercial_sector" : "",
-    "demand_sectors_transport" : "",
-    """
 
+    "energy_carrier_gas": "Energy carrier (Gas)",
 
-    "energy_carrier_gas_natural_gas" : "",
-    "energy_carrier_gas_biogas" : "",
-    "energy_carrier_gas_hydrogen" : "",
+    "energy_carrier_liquid": "Energy carrier (Liquid)",
 
-    "energy_carrier_liquids_petrol" : "",
-    "energy_carrier_liquids_diesel" : "",
-    "energy_carrier_liquids_ethanol" : "",
+    "energy_carrier_solid": "Energy carrier (Solid)",
 
-    "energy_carrier_solid_hard_coal" : "",
-    "energy_carrier_solid_hard_lignite" : "",
-    "energy_carrier_solid_hard_uranium" : "",
-    "energy_carrier_solid_hard_biomass" : "",
-
-    "energy_carrier_renewables_sun" : "",
-    "energy_carrier_renewables_wind" : "",
-    "energy_carrier_renewables_hydro" : "",
-    "energy_carrier_renewables_geothermal_heat" : "",
+    "energy_carrier_renewables": "Energy carrier (Renewable)",
 
     "generation": "Technologies",
 
-    """
-    "generation_renewables_PV" : "technologies",
-    "generation_renewables_wind" : "technologies",
-    "generation_renewables_hydro" : "technologies",
-    "generation_renewables_biomass" : "technologies",
-    "generation_renewables_biogas" : "technologies",
-    "generation_renewables_solar_thermal" : "technologies",
-    "generation_renewables_others" : "technologies",
-    "generation_renewables_others_text" : "",
-    "generation_conventional_gas" : "technologies",
-    "generation_conventional_coal" : "technologies",
-    "generation_conventional_oil" : "technologies",
-    "generation_conventional_liquid_fuels" : "technologies",
-    "generation_conventional_nuclear" : "technologies",
-    "generation_CHP" : "technologies",
-    """
+    "transfer_electricity" : "Transfer (Electricity)",
 
-    "transfer_electricity" : "",
-    "transfer_electricity_distribution" : "",
-    "transfer_electricity_transition" : "",
+    "transfer_gas" : "Transfer (Gas)",
 
-    "transfer_gas" : "",
-    "transfer_gas_distribution" : "",
-    "transfer_gas_transition" : "",
-
-    "transfer_heat" : "",
-    "transfer_heat_distribution" : "",
-    "transfer_heat_transition" : "",
+    "transfer_heat" : "Transfer (Heat)",
 
     "network_coverage" : "Network coverage",
-    """
-    "network_coverage_AC" : "network_coverage",
-    "network_coverage_DC" : "network_coverage",
-    "network_coverage_NT" : "network_coverage",
-    """
 
-    "storage_electricity_battery" : "",
-    "storage_electricity_kinetic" : "",
-    "storage_electricity_CAES" : "",
-    "storage_electricity_PHS" : "",
-    "storage_electricity_chemical" : "",
 
-    "storage_heat" : "",
-    "storage_gas" : "",
+    "storage_electricity": "Storage (Electricity)",
 
-    "user_behaviour" : "",
+    "storage_heat" : "Storage (Heat)",
+    "storage_gas" : "Storage (Gas)",
+
+    "user_behaviour" : "User Behaviour",
     "user_behaviour_yes_text" : "",
-    "changes_in_efficiency" : "",
+    "changes_in_efficiency" : "Changes in Efficiency",
 
-    "market_models" : "",
+    "market_models" : "Market model",
 
     "geographical_coverage" : "Georegions",
 
     "georesolution" : "Georesolution",
 
-    """geo_resolution_global" : "georesolution",
-    "geo_resolution_continents" : "georesolution",
-    "geo_resolution_national_states" : "georesolution",
-    "geo_resolution_TSO_regions" : "georesolution",
-    "geo_resolution_federal_states" : "georesolution",
-    "geo_resolution_regions" : "georesolution",
-    "geo_resolution_NUTS_3" : "georesolution",
-    "geo_resolution_municipalities" : "georesolution",
-    "geo_resolution_districts" : "georesolution",
-    "geo_resolution_households" : "georesolution",
-    "geo_resolution_power_stations" : "georesolution",
-    "geo_resolution_others" : "georesolution",
-    "geo_resolution_others_text" : """
 
     "comment_on_geo_resolution" : "",
     "timeresolution": "Timeresolution",
 
-    """
-    "time_resolution_anual" : "timeresolution",
-    "time_resolution_hour" : "timeresolution",
-    "time_resolution_15_min" : "timeresolution",
-    "time_resolution_1_min" : "timeresolution",
-    """
-
-    "observation_period_more_1_year" : "",
-    "observation_period_less_1_year" : "",
-    "observation_period_1_year" : "",
-    "observation_period_other" : "",
-    "observation_period_other_text" : "",
+    "observation_period": "Observation period",
 
     "time_resolution_other" : "",
     "time_resolution_other_text" : "",
 
-    "additional_dimensions_sector_ecological" : "",
-    "additional_dimensions_sector_ecological_text" : "",
-    "additional_dimensions_sector_economic" : "",
-    "additional_dimensions_sector_economic_text" : "",
-    "additional_dimensions_sector_social" : "",
-    "additional_dimensions_sector_social_text" : "",
-    "additional_dimensions_sector_others" : "",
-    "additional_dimensions_sector_others_text" : "",
+
+    "additional_dimensions_sector_ecological" : "Additional dimensions (Ecological)",
+    "additional_dimensions_sector_economical" : "Additional dimensions (Economical)",
+    "additional_dimensions_sector_social" : "Additional dimensions (Social)",
+    "additional_dimensions_sector_others" : "Additional dimensions (Others)",
 
     "model_class": "Model class",
-    """
-    "model_class_optimization_LP" : "Model class",
-    "model_class_optimization_MILP" : "Model class",
-    "model_class_optimization_Nonlinear" : "Model class",
-    "model_class_optimization_LP_MILP_Nonlinear_text" : "Model class",
-
-    "model_class_simulation_Agentbased" : "Model class",
-    "model_class_simulation_System_Dynamics" : "Model class",
-    "model_class_simulation_Accounting_Framework" : "Model class",
-    "model_class_simulation_Game_Theoretic_Model" : "Model class",
-
-    "model_class_other" : "",
-    "model_class_other_text" : "",
-    """
 
 
     "short_description_of_mathematical_model_class" : "Math modeltype shortdesc",
     "math_objective": "Math objective",
-    """
-    "mathematical_objective_cO2" : "Math objective",
-    "mathematical_objective_costs" : "Math objective",
-    "mathematical_objective_rEshare" : "Math objective",
-    "mathematical_objective_other" : "Math objective",
-    "mathematical_objective_other_text" : "Math objective",
-    """
 
     "deterministic": "Deterministic",
 
-    """
-    "uncertainty_deterministic" : "Deterministic",
-    "uncertainty_Stochastic" : "Deterministic",
-    "uncertainty_Other" : "",
-    "uncertainty_Other_text" : "",
-    """
-    "montecarlo" : "",
+    "montecarlo" : "Montecarlo",
 
     "typical_computation_time" : "Computation time minutes",
 
-    "typical_computation_hardware" : "",
+    "typical_computation_hardware" : "Computation Hardware",
     "technical_data_anchored_in_the_model" : "",
 
     "example_research_questions" : "Example research questions",
 
-    "validation_models" : "",
-    "validation_measurements" : "",
-    "validation_others" : "",
-    "validation_others_text" : "",
+    "validation": "Validation",
+    "validation_others_text" : "Description on Validation",
 
-    "model_specific_properties" : ""
-    # Missing: decisions, model_class, number_of_variables, computation_time_comments
+    "model_specific_properties" : "Specific properties",
+
+    "interfaces" : "Interfaces",
+    "model_file_format" : "Model file format",
+    "model_input" : "Model input file format",
+    "model_output" : "Model output file format",
+    "integrating_models" : "Integrating models",
+    "integrated_models" : "Integrated models",
+
+# Missing: decisions, model_class, number_of_variables, computation_time_comments
     }
+
+ST_MAP = {
+    "name_of_the_study": "Name of the stud",
+    "author_Institution": "Authors",
+    "client": "Clients",
+
+    "funding_private": "Funding",
+    "funding_public": "",
+    "funding_no_funding": "",
+
+    "citation_reference": "Citation references",
+    "citation_doi": "Citation doi",
+    "aim": "Aim",
+    "new_aspects": "New aspects",
+    "spatial_Geographical_coverage": "",
+
+    "time_frame": "Time frame",
+    "time_frame_2020": "",
+    "time_frame_2030": "",
+    "time_frame_2050": "",
+    "time_frame_other": "",
+    "time_frame_other_text": "",
+
+    "target_year": "Target year",
+    "transformation_path": "Transformation path",
+    "time_frame_2_target_year": "",
+    "time_frame_2_transformation_path": "",
+
+    "tools_models": "Used models",
+    "tools_tools": "Used tools",
+
+    "modeled_energy_sectors": "Modelled energy sectors",
+    "modeled_energy_sectors_electricity": "",
+    "modeled_energy_sectors_heat": "",
+    "modeled_energy_sectors_liquid_fuels": "",
+    "modeled_energy_sectors_gas": "",
+    "modeled_energy_sectors_others": "",
+    "modeled_energy_sectors_others_text": "",
+
+    "modeled_demand_sectors": "Modelled demand sectors",
+    "modeled_demand_sectors_households": "",
+    "modeled_demand_sectors_industry": "",
+    "modeled_demand_sectors_commercial_sector": "",
+    "modeled_demand_sectors_transport": "",
+
+    "economic_behavioral": "Economic behavioral",
+    "economic_behavioral_perfect": "",
+    "economic_behavioral_myopic": "",
+    "economic_behavioral_qualitative": "",
+    "economic_behavioral_agentbased": "",
+    "economic_behavioral_other": "",
+    "economic_behavioral_other_text": "",
+
+    "renewables": "Renewables",
+    "renewables_PV": "",
+    "renewables_wind": "",
+    "renewables_hydro": "",
+    "renewables_biomass": "",
+    "renewables_biogas": "",
+    "renewables_solar": "",
+    "renewables_others": "",
+    "renewables_others_text": "",
+
+    "conventional_generation": "Conventional",
+    "conventional_generation_gas": "",
+    "conventional_generation_coal": "",
+    "conventional_generation_oil": "",
+    "conventional_generation_liquid": "",
+    "conventional_generation_nuclear": "",
+
+    "CHP": "CHP",
+
+    "networks": "Networks",
+    "networks_electricity_gas_electricity": "",
+    "networks_electricity_gas_gas": "",
+    "networks_electricity_gas_heat": "",
+
+
+    "storages_battery": "",
+    "storages_kinetic": "",
+    "storages_CAES": "",
+    "storages_PHS": "",
+    "storages_chemical": "",
+
+    "economic_focuses_included": "Economic focuses",
+    "social_focuses_included": "Social focuses",
+    "endogenous_variables": "Endogenous variables",
+    "sensitivities": "Sensitivities",
+
+    "time_steps": "Time steps",
+    "time_steps_anual": "",
+    "time_steps_hour": "",
+    "time_steps_15_min": "",
+    "time_steps_1_min": "",
+    "time_steps_sec": "",
+    "time_steps_other": "",
+    "time_steps_other_text": ""
+}
+
+SC_MAP ={
+    "study": "Study",
+
+    "exogenous_time_series_used": "Exogenous time series used",
+    "exogenous_time_series_used_climate": "",
+    "exogenous_time_series_used_feedin": "",
+    "exogenous_time_series_used_loadcurves": "",
+    "exogenous_time_series_used_others": "",
+    "exogenous_time_series_used_others_text": "",
+
+    "technical_data": "Technical data",
+    "social_data": "Social data",
+    "economical_data": "Economical data",
+    "ecological_data": "Ecological data",
+    "preProcessing": "Preprocessing",
+    "name_of_scenario": "Full model name",
+
+    "energy_saving_amount": "Energy saving",
+    "energy_saving_kind": "Energy saving kind",
+    "energy_saving_year": "Energy saving year",
+    "potential_energy_savings_amount": "Potential energy saving",
+    "potential_energy_savings_kind": "Potential energy saving kind",
+    "potential_energy_savings_year": "Potential energy saving year",
+    "emission_reductions_amount": "Emission reductions",
+    "emission_reductions_kind": "Emission reductions kind",
+    "emission_reductions_year": "Emission reductions year",
+    "share_RE_power_amount": "Share RE (Power)",
+    "share_RE_power_kind": "Share RE (Power) kind",
+    "share_RE_power_year": "Share RE (Power) year",
+    "share_RE_heat_amount": "Share RE (Heat)",
+    "share_RE_heat_kind": "Share RE (Heat) kind",
+    "share_RE_heat_year": "Share RE (Heat) year",
+    "share_RE_mobility_amount": "Share RE (Mobility)",
+    "share_RE_mobility_kind": "Share RE (Mobility) kind",
+    "share_RE_mobility_year": "Share RE (Mobility) year",
+    "share_RE_total_amount": "Share RE (Total)",
+    "share_RE_total_kind": "Share RE (Total) kind",
+    "share_RE_total_year": "Share RE (Total) year",
+
+    "cost_development": "Cost development",
+    "cost_development_capex": "",
+    "cost_development_opex": "",
+    "cost_development_learning_curves": "",
+    "cost_development_constant": "",
+    "cost_development_rediscount": "",
+
+    "technological_innovations": "Technological innovations",
+
+    "potential_wind": "Potential (Wind)",
+    "potential_wind_whole": "",
+    "potential_wind_technical": "",
+    "potential_wind_economical": "",
+    "potential_wind_ecological": "",
+    "potential_wind_other": "",
+    "potential_wind_other_text": "",
+
+    "potential_solar_electric": "Potential (Solar)",
+    "potential_solar_electric_whole": "",
+    "potential_solar_electric_technical": "",
+    "potential_solar_electric_economical": "",
+    "potential_solar_electric_ecological": "",
+    "potential_solar_electric_other": "",
+    "potential_solar_electric_other_text": "",
+
+    "potential_solar_thermal": "Potential (Thermal)",
+    "potential_solar_thermal_whole": "",
+    "potential_solar_thermal_technical": "",
+    "potential_solar_thermal_economical": "",
+    "potential_solar_thermal_ecological": "",
+    "potential_solar_thermal_other": "",
+    "potential_solar_thermal_other_text": "",
+
+    "potential_biomass": "Potential (Biomass)",
+    "potential_biomass_whole": "",
+    "potential_biomass_technical": "",
+    "potential_biomass_economical": "",
+    "potential_biomass_ecological": "",
+    "potential_biomass_other": "",
+    "potential_biomass_other_text": "",
+
+    "potential_geothermal": "Potential (Geothermal)",
+    "potential_geothermal_whole": "",
+    "potential_geothermal_technical": "",
+    "potential_geothermal_economical": "",
+    "potential_geothermal_ecological": "",
+    "potential_geothermal_other": "",
+    "potential_geothermal_othertext": "",
+
+    "potential_hydro": "Potential (Hydro)",
+    "potential_hydro_power_whole": "",
+    "potential_hydro_power_technical": "",
+    "potential_hydro_power_economical": "",
+    "potential_hydro_power_ecological": "",
+    "potential_hydro_power_other": "",
+    "potential_hydro_power_other_text": "",
+
+    "social_developement": "Social development",
+    "economic_development": "Economic development",
+    "development_of_environmental_aspects": "Development of enviromental aspects",
+    "postprocessing": "Postprocessing",
+    "further_assumptions_for_postprocessing": "Assumptions for postprocessing",
+    "further_assumptions_for_postprocessing_text": "",
+    "uncertainty_assessment": "Uncertainity assessment",
+    "robustness": "Robustness",
+    "comparability_Validation": "Comparability validation",
+    "conclusions": "Conclusions"
+}
+
 
 def load_EM(name):
     properties = set(EM_Map.values())
     prop_query = "|?".join(properties)
     query = 'http://wiki.openmod-initiative.org/api.php?format=json&action=ask&query=[[Category:Model]]%s'%(prop_query)
+    print(query)
     result = requests.get(query).json()
-
+    type_map = {p['label']:p['typeid'] for p in result['query']['printrequests']}
     result = result['query']['results'][name]['printouts']
     m = Energymodel()
 
     for key in EM_Map:
+        x = {'label': EM_Map[key]}
         if EM_Map[key] in result:
-            setattr(m, key, result[EM_Map[key]])
+            x['value'] = result[EM_Map[key]]
+            x['type'] = type_map[EM_Map[key]]
         else:
-            print("MISSING: ", key)
-            setattr(m, key, None)
+            x['value'] = None
+            x['type'] = None
+        print(x)
+        setattr(m, key, x)
 
+    m.pagetitle = name
     print("unused", [k for k in result if k not in EM_Map.values()])
     return m
 

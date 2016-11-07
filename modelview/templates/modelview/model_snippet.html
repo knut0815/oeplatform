@@ -2,30 +2,16 @@
 <tr>
     <td class="sheetlabel"> 
         {% assign_field_attr model field 'help_text' as vname %} 
-        {% assign_field model field as val %} 
-        {% get_field_attr model field 'verbose_name'%} 
+        {% assign_field model field as f %}
         {% if vname %}
             <a href='javascript://' data-toggle='popover' data-trigger="focus" title="" data-content="{{ vname }}">
                 <span class='glyphicon glyphicon-question-sign'></span>
             </a>
         {% endif %}
+
+        {{f.label}}
     </td>
     <td> 
-        {% if not add %} 
-            {% if val != None %}
-                {% if val = False %}
-                    <span class='glyphicon glyphicon-remove'></span> 
-                {% elif val = True  %}
-                    <span class='glyphicon glyphicon-ok'></span> 
-                {% else %}
-                    {% get_field model field %} 
-                {% endif %}
-            {% else %}
-                -
-            {% endif %} 
-        {% endif %} 
-        {% if val and add%} 
-            {{ add }} 
-        {% endif %}
+        {% include 'modelview/field_snippet.html' with model=model field=field %}
     </td>
 </tr>
