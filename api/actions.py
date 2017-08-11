@@ -8,7 +8,7 @@ import psycopg2
 import sqlalchemy as sqla
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
-from sqlalchemy import func, MetaData, Table
+from sqlalchemy import func, MetaData, Table, and_, join, select
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm.session import sessionmaker
 
@@ -136,18 +136,19 @@ def describe_columns(schema, table):
 
     engine = _get_engine()
     session = sessionmaker(bind=engine)()
-    query = 'select column_name, ' \
-            'c.ordinal_position, c.column_default, c.is_nullable, c.data_type, ' \
-            'c.character_maximum_length, c.character_octet_length, ' \
-            'c.numeric_precision, c.numeric_precision_radix, c.numeric_scale, ' \
-            'c.datetime_precision, c.interval_type, c.interval_precision, ' \
-            'c.maximum_cardinality, c.dtd_identifier, c.is_updatable, e.data_type as element_type ' \
-            'from INFORMATION_SCHEMA.COLUMNS  c ' \
-            'LEFT JOIN information_schema.element_types e ' \
-            'ON ((c.table_catalog, c.table_schema, c.table_name, \'TABLE\', c.dtd_identifier) ' \
-            '= (e.object_catalog, e.object_schema, e.object_name, e.object_type, e.collection_type_identifier)) where table_name = ' \
-            '\'{table}\' and table_schema=\'{schema}\';'.format(
-        table=table, schema=schema)
+    metadata = MetaData(bind=engine)
+    e = Table('element_types', metadata, schema='information_schema', autoload=True)
+    c = Table('columns', metadata, schema='information_schema', autoload=True)
+    j = join(c,e, and_(c.c.table_catalog == e.c.object_catalog,
+                       c.c.table_schema == e.c.object_schema,
+                       c.c.table_name == e.c.object_name,
+                       'TABLE' == e.c.object_type,
+                       c.c.dtd_identifier == e.c.collection_type_identifier), isouter=True)
+    query = select([c.c.column_name, c.c.udt_name, c.c.ordinal_position, c.c.column_default, c.c.is_nullable, c.c.data_type,
+            c.c.character_maximum_length, c.c.character_octet_length,
+            c.c.numeric_precision, c.c.numeric_precision_radix, c.c.numeric_scale,
+            c.c.datetime_precision, c.c.interval_type, c.c.interval_precision,
+            c.c.maximum_cardinality, c.c.dtd_identifier, c.c.is_updatable, e.c.data_type.label('element_type')]).select_from(j).where(and_(c.c.table_name==table, c.c.table_schema==schema))
     response = session.execute(query)
     session.close()
     return {column.column_name: {
@@ -155,6 +156,7 @@ def describe_columns(schema, table):
         'column_default': column.column_default,
         'is_nullable': column.is_nullable == 'YES',
         'data_type': _translate_sqla_type(column.data_type, column.element_type),
+        'udt_name': column.udt_name,
         'character_maximum_length': column.character_maximum_length,
         'character_octet_length': column.character_octet_length,
         'numeric_precision': column.numeric_precision,
