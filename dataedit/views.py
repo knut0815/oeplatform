@@ -28,7 +28,19 @@ import api.actions as dba
 import api.parser
 import oeplatform.securitysettings as sec
 from api import actions
-from dataedit.models import Table
+from .models import TableRevision, View as DBView, Table
+from django.db.models import Q
+from functools import reduce
+import operator
+import time
+from django_ajax.decorators import ajax
+import csv
+import codecs
+from io import TextIOWrapper
+import re
+import sqlalchemy as sqla
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.dialects.postgresql import array_agg, ARRAY
 from dataedit.structures import Table_tags, Tag
 from login import models as login_models
 from .models import TableRevision
@@ -529,6 +541,85 @@ def add_tag(name, color):
     session.commit()
 
 
+def view_edit(request, schema, table):
+    post_id = request.GET.get("id")
+    if post_id:
+        view = DBView.objects.get(id=post_id)
+        context = { "type": view.type, "view": view, "schema": schema, "table": table }
+        if view.data != '':
+            context.update(json.loads(view.data))
+        return render(request, template_name='dataedit/view_editor.html', context=context)
+    else:
+        type = request.GET.get("type")
+        return render(request, template_name='dataedit/view_editor.html',
+                      context={ "type": type, "new": True, "schema": schema, "table": table})
+
+
+def view_save(request, schema, table):
+    post_name = request.POST.get("name")
+    post_type = request.POST.get("type")
+    post_id = request.POST.get("id")
+
+    post_table = request.POST.get("table")
+    post_schema = request.POST.get("schema")
+
+    post_data = {}
+
+    if post_type == 'graph':
+        post_x_axis = request.POST.get('x-axis')
+        y_axis_list = []
+        for item in request.POST.items():
+            item_name, item_value = item
+            if item_name.startswith('y-axis-') and item_value == 'on':
+                y_axis_list.append(item_name['y-axis-'.__len__():])
+        post_data = { 'x_axis': post_x_axis, 'y_axis': y_axis_list }
+    elif post_type == 'map':
+        post_pos_type = request.POST.get('location_type')
+        if post_pos_type == 'single-column':
+            post_geo_column = request.POST.get('geo_data')
+            post_data = { 'geo_type': 'single-column', 'geo_column': post_geo_column }
+        elif post_pos_type == 'lat_long':
+            post_geo_lat = request.POST.get('geo_lat')
+            post_geo_long = request.POST.get('geo_long')
+            post_data = { 'geo_type': 'lat_long', 'geo_lat': post_geo_lat, 'geo_long': post_geo_long }
+
+    post_filter = request.POST.get("filter")
+    if (post_filter != ""):
+        post_data.update({ 'filter': json.loads(post_filter)})
+
+    if post_id:
+        update_view = DBView.objects.filter(id = post_id).get()
+        update_view.name = post_name
+        update_view.data = json.dumps(post_data)
+        update_view.save()
+        return redirect('../../' + table + "?view=" + post_id)
+    else:
+        new_view = DBView(name=post_name, type=post_type, data=json.dumps(post_data), table=table, schema=schema)
+        new_view.save()
+        return redirect('../../' + table + "?view=" + str(new_view.id))
+
+
+def view_set_default(request, schema, table):
+    post_id = request.GET.get("id")
+
+    for view in DBView.objects.filter(schema=schema, table=table):
+        if str(view.id) == post_id:
+            view.is_default = True
+        else:
+            view.is_default = False
+        view.save()
+    return redirect('/dataedit/view/' + schema + '/' + table)
+
+
+def view_delete(request, schema, table):
+    post_id = request.GET.get("id")
+
+    view = DBView.objects.get(id=post_id, schema=schema, table=table)
+    view.delete()
+
+    return redirect('/dataedit/view/' + schema + '/' + table)
+
+
 class DataView(View):
     """ This method handles the GET requests for the main page of data edit.
         Initialises the session data (if necessary)
@@ -581,20 +672,39 @@ class DataView(View):
         if request.user and not request.user.is_anonymous():
             is_admin = request.user.has_admin_permissions(schema, table)
 
-        return render(request,
-                      'dataedit/dataedit_overview.html',
-                      {
-                          'comment_on_table': dict(comment_on_table),
-                          'revisions': revisions,
-                          'kinds': ['table', 'map', 'graph'],
-                          'table': table,
-                          'schema': schema,
-                          'tags': tags,
-                          'data': data,
-                          'display_message': display_message,
-                          'display_items': display_items,
-                          'is_admin': is_admin
-                      })
+        table_views = DBView.objects.filter(table = table).filter(schema = schema)
+
+        try:
+            current_view = table_views.get(id = request.GET.get("view"))
+        except:
+            try:
+                current_view = table_views.filter(is_default=True)[0]
+            except:
+                try:
+                    current_view = table_views[0]
+                except:
+                    current_view = DBView(name="default", type="table", data="", table=table, schema = schema)
+
+        context_dict = {
+            'comment_on_table': dict(comment_on_table),
+            'revisions': revisions,
+            'kinds': ['table', 'map', 'graph'],
+            'table': table,
+            'schema': schema,
+            'tags': tags,
+            'views': table_views,
+            'current_view': current_view,
+            'data': data,
+            'display_message': display_message,
+            'display_items': display_items,
+            'is_admin': is_admin
+        }
+
+        if current_view.data != '':
+            json_data = json.loads(current_view.data)
+            context_dict.update(json_data)
+
+        return render(request, 'dataedit/dataedit_overview.html', context=context_dict)
 
     def post(self, request, schema, table):
         """
