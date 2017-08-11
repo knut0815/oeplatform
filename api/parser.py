@@ -132,7 +132,7 @@ def parse_select(d):
         for field in d['fields']:
             col = parse_expression(field)
             if 'as' in field:
-                col.label(read_pgid(field['as']))
+                col = col.label(read_pgid(field['as']))
             L.append(col)
     from_clause = parse_from_item(d['from'])
     if not L:
