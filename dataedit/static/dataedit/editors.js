@@ -318,15 +318,21 @@ function get_field_query(field){
         column: field.id
     };
 
-    if (field.data_type.type.startsWith('geometry')) {
+    if (field.data_type.startsWith('geometry') || field.udt_name.startsWith('geometry')) {
        // transform coordinates from whatever format they're in
        //   into epsg 4326, i.e. latitude and longitude
-        column_query = {
+        column_query =
+        {
             type: "function",
-            function: "ST_Transform",
-            operands: [column_query, {type: "value", value: 4326}],
+            function: "ST_AsGeoJSON",
+            operands: [{
+                type: "function",
+                function: "ST_Transform",
+                operands: [column_query, {type: "value", value: 4326}]
+            }],
             as: field.id
         };
+
         // convert geo-data in readable geo-json
     }
     return column_query;
