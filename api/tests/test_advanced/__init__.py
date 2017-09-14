@@ -56,10 +56,3 @@ class APITestCase(TestCase):
                 covalue = d2[key]
                 self.assertEqual(value, covalue,
                                  "Key '{key}' does not match.".format(key=key))
-
-    def assertStatus(self, result, status=200):
-        self.assertEqual(result.status_code,
-                         status,
-                         'Wrong status (Expected %d, Got: %d): %s'%(status,
-                            result.status_code, result.content)
-                         )

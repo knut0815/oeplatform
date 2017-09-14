@@ -563,7 +563,7 @@ def create_ajax_handler(func):
     """
     class AJAX_View(APIView):
 
-
+        @api_exception
         def get(self, request):
             return JsonResponse(self.execute(request))
 
@@ -582,8 +582,8 @@ def create_ajax_handler(func):
                     query = query[0]
                 if isinstance(query, str):
                     query = json.loads(query)
-            except:
-                raise APIError('Your query is not properly formated.')
+            except Exception as e:
+                raise APIError('Your query is not properly formated (%s) '%str(e) )
             data = func(query, context)
 
             # This must be done in order to clean the structure of non-serializable
