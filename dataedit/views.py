@@ -419,7 +419,7 @@ def create_dump(schema, table, fname):
          sec.dbuser, '-h', sec.dbhost, '-p',
          str(sec.dbport), '-d', sec.dbname, '-f',
          sec.MEDIA_ROOT + '/dumps/{schema}/{table}/'.format(schema=schema, table=table) + fname+'.dump'] + reduce(add, (['-n', s, '-t', s + '.' + t] for s,t in get_dependencies(schema,table)),[])
-    yield call(L, shell=False)
+    return call(L, shell=False)
 
 
 def send_dump(schema, table, fname):
